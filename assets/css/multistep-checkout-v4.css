@@ -1,0 +1,3436 @@
+/**
+ * Multistep Checkout v4.2 - CSS CORRIGIDO
+ * CORREÇÕES:
+ * - Layout de frete no padrão Mercado Livre
+ * - Cards clicáveis com thumbnail, data e valor
+ * - Remoção de "(opcional)" desnecessários
+ */
+
+/* ========================================
+   VARIÁVEIS E RESET
+======================================== */
+:root {
+  --msc-primary: #3483fa;
+  --msc-primary-dark: #2968c8;
+  --msc-success: #00a650;
+  --msc-danger: #f23d4f;
+  --msc-warning: #ff9500;
+  --msc-text: #333;
+  --msc-text-light: #666;
+  --msc-border: #e5e7eb;
+  --msc-bg-light: #f5f5f5;
+  --msc-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --msc-radius: 8px;
+  --msc-transition: all 0.3s ease;
+
+  /* Cliente8 design tokens */
+  --msc-primary-orange: #F05A28;
+  --msc-primary-orange-dark: #D6421E;
+  --msc-near-black: #231F20;
+  --msc-body-bg: #EDEEF0;
+  --msc-muted: #666;
+  --msc-muted-2: #999;
+  --msc-hairline: #eee;
+  --msc-hairline-2: #ddd;
+  --msc-panel-bg: #F7F7F8;
+  --msc-error-bg: #fdeceb;
+  --msc-radius-pill: 999px;
+  --msc-radius-card: 12px;
+  --msc-radius-input: 8px;
+  --msc-radius-thumb: 10px;
+  --msc-shadow-page: 0 8px 30px rgba(0, 0, 0, .10);
+  --msc-shadow-preview: 0 8px 20px rgba(0, 0, 0, .16);
+  --msc-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ========================================
+   TEMA: manter o header/breadcrumb reais do site no checkout
+   (o header e o banner de segurança próprios do plugin foram removidos
+   a pedido — o site já tem seu próprio header completo, #ecHeader, que
+   deve continuar aparecendo normalmente aqui)
+======================================== */
+body.woocommerce-checkout {
+  background: var(--msc-body-bg);
+}
+
+/* ========================================
+   WRAPPER PRINCIPAL
+======================================== */
+.msc-checkout-wrapper {
+  font-family: var(--msc-font-family);
+  padding-top: 24px;
+  padding-bottom: 40px;
+}
+
+/* ========================================
+   BARRA DE PROGRESSO
+======================================== */
+.msc-progress-container {
+  max-width: 1440px;
+  margin: 0 auto 32px;
+  background: white;
+  padding: 24px;
+  border-radius: var(--msc-radius-card);
+  box-shadow: var(--msc-shadow-page);
+}
+
+@media (max-width: 1480px) {
+  .msc-progress-container {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}
+
+.msc-progress-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.msc-progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+  cursor: pointer;
+  transition: var(--msc-transition);
+}
+
+.msc-step-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--msc-bg-light);
+  border: 2px solid var(--msc-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--msc-text-light);
+  transition: var(--msc-transition);
+  position: relative;
+  z-index: 2;
+}
+
+.msc-step-label {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--msc-text-light);
+  font-weight: 500;
+  transition: var(--msc-transition);
+}
+
+.msc-progress-step.completed .msc-step-circle {
+  background: var(--msc-success);
+  border-color: var(--msc-success);
+  color: white;
+}
+
+.msc-progress-step.completed .msc-step-circle::after {
+  content: '✓';
+}
+
+.msc-progress-step.active .msc-step-circle {
+  background: var(--msc-primary-orange);
+  border-color: var(--msc-primary-orange);
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(240, 90, 40, 0.3);
+}
+
+.msc-progress-step.active .msc-step-label {
+  color: var(--msc-primary-orange);
+  font-weight: 600;
+}
+
+.msc-progress-bar {
+  height: 4px;
+  background: var(--msc-border);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.msc-progress-bar-inner {
+  height: 100%;
+  background: var(--msc-primary-orange);
+  transition: width 0.5s ease;
+  border-radius: 2px;
+}
+
+/* ========================================
+   LAYOUT PRINCIPAL
+======================================== */
+.msc-checkout-content {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 1480px) {
+  .msc-checkout-content {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}
+
+.msc-main-panel {
+  background: white;
+  border-radius: var(--msc-radius-card);
+  box-shadow: var(--msc-shadow-page);
+  overflow: hidden;
+}
+
+/* ========================================
+   STEPS
+======================================== */
+.msc-step {
+  display: none;
+  padding: 32px;
+  animation: fadeIn 0.3s ease;
+}
+
+.msc-step.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.msc-step-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--msc-border);
+}
+
+.msc-step-title {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--msc-near-black);
+}
+
+.msc-step-subtitle {
+  margin: 0;
+  font-size: 15px;
+  color: var(--msc-muted);
+}
+
+.msc-step-content {
+  margin-bottom: 24px;
+}
+
+.msc-step-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--msc-border);
+}
+
+/* ========================================
+   BOTÕES
+======================================== */
+.msc-btn {
+  padding: 14px 32px;
+  border: none;
+  border-radius: var(--msc-radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--msc-transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.msc-btn-next,
+.msc-btn-submit {
+  background: var(--msc-primary);
+  color: white;
+  flex: 1;
+}
+
+.msc-btn-next:hover,
+.msc-btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(240, 90, 40, 0.3);
+}
+
+.msc-btn-back {
+  background: white;
+  color: var(--msc-text);
+  border: 2px solid var(--msc-border);
+}
+
+.msc-btn-back:hover {
+  border-color: var(--msc-primary);
+  color: var(--msc-primary);
+}
+
+.msc-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ========================================
+   STEP 1: CARRINHO
+======================================== */
+.msc-cart-item {
+  display: grid;
+  grid-template-columns: 76px 1fr 132px 100px 40px;
+  grid-template-areas:
+    "image details quantity subtotal remove"
+    "stock stock stock stock stock";
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--msc-hairline);
+  border-radius: var(--msc-radius-card);
+  margin-bottom: 12px;
+  transition: var(--msc-transition);
+}
+
+.msc-cart-item:hover {
+  border-color: var(--msc-primary-orange);
+  box-shadow: 0 2px 8px rgba(240, 90, 40, 0.1);
+}
+
+.msc-item-image {
+  grid-area: image;
+}
+
+.msc-item-image img {
+  width: 76px;
+  height: 76px;
+  object-fit: cover;
+  border-radius: var(--msc-radius-thumb);
+}
+
+.msc-item-details {
+  grid-area: details;
+}
+
+.msc-item-category {
+  margin: 0 0 2px 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--msc-muted-2);
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+
+.msc-item-name {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--msc-near-black);
+}
+
+.msc-item-price {
+  margin: 0;
+  font-size: 12px;
+  color: var(--msc-muted-2);
+}
+
+.msc-item-quantity {
+  grid-area: quantity;
+  justify-self: center;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  background: white !important;
+  border: 1px solid var(--msc-hairline-2) !important;
+  border-radius: var(--msc-radius-input) !important;
+  overflow: hidden !important;
+  height: 32px !important;
+  width: auto !important;
+  min-width: 116px !important;
+}
+
+.msc-qty-btn {
+  width: 32px !important;
+  min-width: 32px !important;
+  max-width: 32px !important;
+  height: 32px !important;
+  border: none !important;
+  background: var(--msc-panel-bg) !important;
+  color: var(--msc-near-black) !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: var(--msc-transition) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  user-select: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
+}
+
+.msc-qty-btn:hover {
+  background: var(--msc-primary-orange) !important;
+  color: white !important;
+}
+
+.msc-qty-btn:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+}
+
+.msc-item-quantity input.qty,
+.msc-item-quantity input[type="number"] {
+  width: 52px !important;
+  min-width: 52px !important;
+  max-width: 52px !important;
+  height: 32px !important;
+  border: none !important;
+  border-left: 1px solid var(--msc-hairline-2) !important;
+  border-right: 1px solid var(--msc-hairline-2) !important;
+  text-align: center !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  padding: 0 5px !important;
+  margin: 0 !important;
+  background: white !important;
+  color: var(--msc-near-black) !important;
+  -moz-appearance: textfield !important;
+  flex-shrink: 0 !important;
+}
+
+.msc-item-quantity input::-webkit-outer-spin-button,
+.msc-item-quantity input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+.msc-item-subtotal {
+  grid-area: subtotal;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--msc-primary-orange);
+}
+
+.msc-remove-item {
+  grid-area: remove;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: var(--msc-error-bg);
+  color: var(--msc-primary-orange-dark);
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  transition: var(--msc-transition);
+}
+
+.msc-remove-item:hover {
+  background: var(--msc-primary-orange-dark);
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.msc-item-stock-info {
+  grid-area: stock;
+  font-size: 13px;
+  padding: 8px 12px;
+  background: var(--msc-bg-light);
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+}
+
+.msc-item-stock-info.in-stock {
+  color: var(--msc-success);
+  background: #e8f5e9;
+}
+
+.msc-item-stock-info.low-stock {
+  color: var(--msc-warning);
+  background: #fff3e0;
+}
+
+.msc-item-stock-info.out-of-stock {
+  color: var(--msc-danger);
+  background: #ffebee;
+}
+
+/* Cupom */
+.msc-coupon-wrapper {
+  margin-top: 32px;
+  padding: 20px;
+  background: #fff;
+  border-radius: var(--msc-radius-card);
+  border: 2px dashed var(--msc-hairline-2);
+}
+
+.msc-coupon-title {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--msc-near-black);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.msc-coupon-form {
+  display: flex;
+  gap: 12px;
+}
+
+.msc-coupon-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--msc-hairline-2);
+  border-radius: var(--msc-radius-input);
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.msc-apply-coupon {
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: var(--msc-transition);
+}
+
+.msc-applied-coupons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.msc-applied-coupon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px 6px 14px;
+  background: var(--msc-success);
+  color: #fff;
+  border-radius: var(--msc-radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.msc-applied-coupon .msc-coupon-code {
+  text-transform: uppercase;
+}
+
+.msc-remove-coupon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .25);
+  color: #fff;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.msc-remove-coupon:hover {
+  background: rgba(255, 255, 255, .4);
+}
+
+/* ========================================
+   STEP 2: LAYOUT COMPACTO
+======================================== */
+.msc-billing-section,
+.msc-shipping-section,
+.msc-shipping-methods-container,
+.msc-contact-block,
+.msc-address-block {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: transparent;
+  border-radius: var(--msc-radius);
+  border: 1px solid var(--msc-border);
+}
+
+.msc-section-title {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--msc-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--msc-border);
+}
+
+.msc-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.msc-fields-grid .form-row-wide {
+  grid-column: 1 / -1;
+}
+
+.msc-fields-grid .form-row label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--msc-text);
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* ========================================
+   STEP 2: CORREÇÃO DE LABELS VIA CSS PURO
+======================================== */
+
+/* 🔴 MELHOR TÉCNICA: font-size: 0 + ::before com font-size normal */
+
+/* Esconder texto original fazendo font-size: 0 */
+#billing_address_2_field label,
+#shipping_address_2_field label {
+  font-size: 0 !important;
+  display: inline-block !important;
+}
+
+/* Inserir "Complemento" com font-size normal (mesmo estilo aplicado aos
+   demais labels do Step 2) */
+#billing_address_2_field label::before,
+#shipping_address_2_field label::before {
+  content: "Complemento " !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #444 !important;
+  display: inline !important;
+}
+
+/* Restaurar font-size dos spans para ficarem visíveis */
+#billing_address_2_field label .optional,
+#shipping_address_2_field label .optional {
+  font-size: 13px !important;
+  color: var(--msc-text-light) !important;
+  display: inline !important;
+}
+
+#billing_address_2_field label .required,
+#shipping_address_2_field label .required {
+  font-size: 16px !important;
+  color: var(--msc-danger) !important;
+  display: inline !important;
+}
+
+/* Esconder "(opcional)" no Step 2 */
+.msc-step[data-step="2"] .form-row label .optional {
+  display: none !important;
+}
+
+.msc-fields-grid .form-row input,
+.msc-fields-grid .form-row select {
+  width: 100% !important;
+  padding: 10px 12px;
+  border: 1px solid var(--msc-border);
+  border-radius: 6px;
+  font-size: 14px;
+  transition: var(--msc-transition);
+}
+
+.msc-fields-grid .form-row input:focus,
+.msc-fields-grid .form-row select:focus {
+  outline: none;
+  border-color: var(--msc-primary);
+  box-shadow: 0 0 0 3px rgba(52, 131, 250, 0.1);
+}
+
+.msc-ship-to-different {
+  margin: 24px 0;
+  padding: 16px 20px;
+  background: white;
+  border: 2px solid var(--msc-primary);
+  border-radius: var(--msc-radius);
+}
+
+.msc-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.msc-checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--msc-primary-orange);
+}
+
+/* ========================================
+   STEP 2: CONTATO / ENDEREÇO (display + edição)
+======================================== */
+.msc-contact-block[data-mode="display"] .msc-contact-edit,
+.msc-address-block[data-mode="display"] .msc-address-edit {
+  display: none;
+}
+
+.msc-contact-block[data-mode="edit"] .msc-contact-display,
+.msc-address-block[data-mode="edit"] .msc-address-display {
+  display: none;
+}
+
+.msc-contact-display {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+}
+
+.msc-contact-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.msc-contact-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  color: var(--msc-muted-2);
+}
+
+.msc-contact-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--msc-near-black);
+}
+
+.msc-inline-edit-btn {
+  margin-left: auto;
+  padding: 8px 16px;
+  background: #fff;
+  border: 1px solid var(--msc-hairline-2);
+  border-radius: var(--msc-radius-pill);
+  color: var(--msc-primary-orange);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--msc-transition);
+}
+
+.msc-inline-edit-btn, .msc-inline-save-btn {
+  text-transform: uppercase;
+  letter-spacing: .2px;
+}
+
+.msc-inline-edit-btn:hover {
+  border-color: var(--msc-primary-orange);
+  background: #fff5f0;
+}
+
+.msc-inline-save-btn {
+  margin-top: 16px;
+}
+
+.msc-fields-grid-3col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.msc-address-display {
+  position: relative;
+}
+
+.msc-address-card {
+  position: relative;
+  padding: 16px 20px;
+  background: #fff;
+  border: 2px solid var(--msc-hairline-2);
+  border-radius: var(--msc-radius-card);
+}
+
+.msc-address-card.is-selected {
+  border-color: var(--msc-primary-orange);
+  background: #fff5f0;
+}
+
+.msc-address-badge {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 3px 10px;
+  background: var(--msc-primary-orange);
+  color: #fff;
+  border-radius: var(--msc-radius-pill);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .4px;
+}
+
+.msc-address-card-body strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: var(--msc-near-black);
+}
+
+.msc-address-card-body p {
+  margin: 0 0 2px 0;
+  font-size: 13px;
+  color: var(--msc-muted);
+}
+
+.msc-address-card .msc-inline-edit-btn {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  margin-left: 0;
+}
+
+/* Neutraliza o wrapper .msc-ship-to-different (que por padrão tem uma
+   borda azul sólida de 2px, sobra do estilo anterior ao redesign) —
+   o visual tracejado agora vive só na label interna, logo abaixo. */
+.msc-ship-to-different-dashed {
+  margin: 0 0 24px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.msc-ship-to-different-dashed .msc-checkbox-label {
+  border-style: dashed;
+  border-color: var(--msc-hairline-2);
+  background: #fff;
+  text-align: center;
+}
+
+.msc-ship-to-different-dashed .msc-checkbox-label .msc-checkbox-text {
+  width: 100%;
+  color: var(--msc-primary-orange);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.msc-ship-to-different-dashed .msc-checkbox-label input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* ========================================
+   STEP 2: OPÇÕES DE FRETE (PADRÃO ML)
+======================================== */
+
+/* Esconder tabela de produtos no Step 2 */
+.msc-step[data-step="2"] .woocommerce-checkout-review-order-table thead,
+.msc-step[data-step="2"] .woocommerce-checkout-review-order-table tbody,
+.msc-step[data-step="2"] .woocommerce-checkout-review-order-table .cart-subtotal,
+.msc-step[data-step="2"] .woocommerce-checkout-review-order-table .cart-discount,
+.msc-step[data-step="2"] .woocommerce-checkout-review-order-table .order-total {
+  display: none !important;
+}
+
+/* Mostrar apenas frete */
+.msc-step[data-step="2"] .woocommerce-checkout-review-order-table .woocommerce-shipping-totals {
+  display: block !important;
+  border: none;
+}
+
+.msc-step[data-step="2"] .woocommerce-checkout-review-order-table .woocommerce-shipping-totals th,
+.msc-step[data-step="2"] .woocommerce-checkout-review-order-table .woocommerce-shipping-totals td {
+  padding: 0;
+  border: none;
+  background: transparent;
+  display: block;
+}
+
+/* ========================================
+   STEP 3: PAGAMENTO
+======================================== */
+#payment {
+  background: transparent;
+}
+
+.wc_payment_methods {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.wc_payment_method {
+  margin-bottom: 12px;
+  border: 2px solid var(--msc-border);
+  border-radius: var(--msc-radius);
+  overflow: hidden;
+}
+
+.wc_payment_method:hover {
+  border-color: var(--msc-primary);
+}
+
+.wc_payment_method label {
+  display: block;
+  padding: 16px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.payment_box {
+  padding: 16px;
+  background: transparent;
+  border-top: 1px solid var(--msc-border);
+}
+
+/* Único gateway ativo: some com o rádio/rótulo genérico do WooCommerce e
+   deixa o payment_fields() do próprio gateway (ex: as abas da Rede) ser
+   o conteúdo principal do Step 3, sem a "caixa dentro de caixa". */
+.msc-payment-methods-single > .wc_payment_method {
+  margin-bottom: 0;
+  border: none;
+  border-radius: 0;
+}
+
+.msc-payment-methods-single > .wc_payment_method > input.input-radio,
+.msc-payment-methods-single > .wc_payment_method > label {
+  display: none;
+}
+
+.msc-payment-methods-single .payment_box {
+  display: block !important;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border-top: none;
+}
+
+/* ========================================
+   STEP 4: REVISÃO
+======================================== */
+.shop_table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.shop_table th,
+.shop_table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--msc-border);
+}
+
+/* ========================================
+   SIDEBAR RESUMO
+======================================== */
+.msc-sidebar {
+  position: sticky;
+  top: 20px;
+}
+
+.msc-summary-card {
+  background: white;
+  border-radius: var(--msc-radius-card);
+  box-shadow: var(--msc-shadow-page);
+  padding: 24px;
+}
+
+.msc-summary-title {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--msc-near-black);
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--msc-hairline);
+}
+
+.msc-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--msc-near-black);
+}
+
+.msc-summary-total {
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px solid var(--msc-hairline);
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.msc-summary-total .msc-total-value {
+  color: var(--msc-primary-orange);
+}
+
+/* ========================================
+   RESPONSIVO
+======================================== */
+@media (max-width: 992px) {
+  .msc-checkout-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .msc-sidebar {
+    position: static;
+    order: -1;
+  }
+  
+  .msc-cart-item {
+    grid-template-columns: 60px 1fr 120px 80px 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .msc-fields-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .msc-cart-item {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "image"
+      "details"
+      "quantity"
+      "subtotal"
+      "stock"
+      "remove";
+  }
+  
+  .msc-step-footer {
+    flex-direction: column;
+  }
+  
+  .msc-btn {
+    width: 100%;
+  }
+}
+
+/* ========================================
+   BLOCOS DE CODLOCAL NO STEP 1 - UNIFORME
+======================================== */
+
+/* Container do grupo - SEMPRE COM BORDA */
+.msc-codlocal-group {
+  margin-bottom: 32px;
+  border: 2px solid var(--msc-primary-orange);
+  border-radius: var(--msc-radius);
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 8px rgba(240, 90, 40, 0.15);
+  transition: var(--msc-transition);
+}
+
+.msc-codlocal-group:hover {
+  border-color: var(--msc-primary-orange-dark);
+  box-shadow: 0 4px 16px rgba(240, 90, 40, 0.25);
+}
+
+/* Cabeçalho do grupo - SEMPRE LARANJA */
+.msc-codlocal-header {
+  background: linear-gradient(135deg, var(--msc-primary-orange) 0%, var(--msc-primary-orange-dark) 100%);
+  padding: 20px 24px;
+  border-bottom: none;
+}
+
+.msc-codlocal-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.msc-codlocal-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.msc-codlocal-details {
+  flex: 1;
+}
+
+.msc-codlocal-name {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.msc-codlocal-code {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+}
+
+.msc-codlocal-meta {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.msc-codlocal-separator {
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 700;
+}
+
+/* Container dos itens */
+.msc-codlocal-items {
+  padding: 16px;
+  background: white;
+}
+
+.msc-codlocal-items .msc-cart-item {
+  border-color: #f0f0f0;
+}
+
+.msc-codlocal-items .msc-cart-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Rodapé do grupo com subtotal - SEMPRE PRESENTE */
+.msc-codlocal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: #fff5f0;
+  border-top: 2px solid var(--msc-primary-orange);
+}
+
+.msc-codlocal-subtotal-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--msc-text);
+}
+
+.msc-codlocal-subtotal-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--msc-primary-orange);
+}
+
+/* Animação ao entrar */
+.msc-codlocal-group {
+  animation: slideInUp 0.4s ease;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Separador visual entre grupos */
+.msc-codlocal-group + .msc-codlocal-group {
+  position: relative;
+  margin-top: 32px;
+}
+
+.msc-codlocal-group + .msc-codlocal-group::before {
+  content: "";
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--msc-primary-orange) 50%,
+    transparent 100%
+  );
+}
+
+/* ========================================
+   RESPONSIVO PARA BLOCOS CODLOCAL
+======================================== */
+
+@media (max-width: 768px) {
+  .msc-codlocal-header {
+    padding: 16px;
+  }
+  
+  .msc-codlocal-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .msc-codlocal-icon {
+    font-size: 28px;
+  }
+  
+  .msc-codlocal-name {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 18px;
+  }
+  
+  .msc-codlocal-footer {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 12px 16px;
+  }
+  
+  .msc-codlocal-subtotal-value {
+    font-size: 18px;
+  }
+  
+  .msc-codlocal-items {
+    padding: 12px;
+  }
+}
+
+/* ========================================
+   BADGE DE MÚLTIPLOS ESTOQUES - LARANJA
+======================================== */
+
+.msc-step[data-step="1"] .msc-step-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.msc-step[data-step="1"]:has(.msc-codlocal-group:nth-of-type(2)) .msc-step-subtitle::after {
+  content: "MÚLTIPLOS ESTOQUES";
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, var(--msc-primary-orange) 0%, var(--msc-primary-orange-dark) 100%);
+  color: white;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-left: 8px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+/* ========================================
+   REMOVER ESTILOS ESPECIAIS DO PRIMEIRO GRUPO
+======================================== */
+
+/* TODOS OS GRUPOS SÃO IGUAIS - sem destaque especial */
+.msc-codlocal-group:first-of-type,
+.msc-codlocal-group:last-of-type,
+.msc-codlocal-group:nth-of-type(2) {
+  border: 2px solid var(--msc-primary-orange);
+}
+
+.msc-codlocal-group:first-of-type .msc-codlocal-header,
+.msc-codlocal-group:last-of-type .msc-codlocal-header {
+  background: linear-gradient(135deg, var(--msc-primary-orange) 0%, var(--msc-primary-orange-dark) 100%);
+}
+
+/* Remover badge especial */
+.msc-codlocal-group:first-of-type .msc-codlocal-code::after {
+  content: none;
+}
+
+/**
+ * CSS STEP 2 - FRETE COM BLOCOS POR CODLOCAL
+ * Adicione este código no arquivo: assets/css/multistep-checkout-v4.css
+ * (Pode substituir toda a seção de frete existente)
+ */
+
+/* ========================================
+   STEP 2: BLOCOS DE FRETE POR CODLOCAL
+======================================== */
+
+/* Container do grupo de frete - IGUAL AO STEP 1 */
+.msc-shipping-group {
+  margin-bottom: 32px;
+  border: 2px solid var(--msc-primary-orange);
+  border-radius: var(--msc-radius);
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 8px rgba(240, 90, 40, 0.15);
+  transition: var(--msc-transition);
+}
+
+.msc-shipping-group:hover {
+  border-color: var(--msc-primary-orange-dark);
+  box-shadow: 0 4px 16px rgba(240, 90, 40, 0.25);
+}
+
+/* Cabeçalho do grupo - IGUAL AO STEP 1 */
+.msc-shipping-group-header {
+  background: linear-gradient(135deg, var(--msc-primary-orange) 0%, var(--msc-primary-orange-dark) 100%);
+  padding: 20px 24px;
+  border-bottom: none;
+}
+
+/* Reutilizar classes do Step 1 no Step 2 */
+.msc-shipping-group-header .msc-codlocal-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.msc-shipping-group-header .msc-codlocal-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.msc-shipping-group-header .msc-codlocal-details {
+  flex: 1;
+}
+
+.msc-shipping-group-header .msc-codlocal-name {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.msc-shipping-group-header .msc-codlocal-code {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+}
+
+.msc-shipping-group-header .msc-codlocal-meta {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.msc-shipping-group-header .msc-codlocal-separator {
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 700;
+}
+
+/* Container dos métodos de frete */
+.msc-shipping-group-methods {
+  padding: 16px;
+  background: white;
+}
+
+/* Lista de métodos */
+.msc-shipping-methods-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Item de método de frete */
+.msc-shipping-method-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.msc-shipping-method-item:hover {
+  border-color: var(--msc-primary-orange);
+  background: #fff8f5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(240, 90, 40, 0.15);
+}
+
+.msc-shipping-method-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Item selecionado */
+.msc-shipping-method-item.is-selected {
+  border-color: var(--msc-primary-orange);
+  background: #fff5f0;
+  box-shadow: 0 4px 12px rgba(240, 90, 40, 0.2);
+}
+
+/* Esconder radio nativo — o círculo visível é .msc-method-radio abaixo */
+.msc-shipping-method-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Radio circular visível à esquerda (design de referência), substitui o
+   check no canto usado antes */
+.msc-method-radio {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-right: 14px;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  box-sizing: border-box;
+  position: relative;
+  transition: border-color 0.2s ease;
+}
+
+.msc-shipping-method-item.is-selected .msc-method-radio {
+  border-color: var(--msc-primary-orange);
+}
+
+.msc-shipping-method-item.is-selected .msc-method-radio::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--msc-primary-orange);
+}
+
+/* Label ocupa todo o espaço */
+.msc-shipping-method-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Detalhes do método (nome + prazo, empilhados) */
+.msc-method-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Nome do método */
+.msc-method-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--msc-text);
+  line-height: 1.4;
+}
+
+/* Valor do frete, alinhado à direita do card */
+.msc-method-cost {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--msc-text);
+  white-space: nowrap;
+  margin-left: 16px;
+}
+
+/* Prazo de entrega */
+.msc-method-time {
+  font-size: 12px;
+  color: var(--msc-muted-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.msc-method-time::before {
+  content: "⏱️";
+  font-size: 11px;
+}
+
+/* Frete grátis */
+.msc-method-cost span[style*="color:#00a650"],
+.msc-method-cost span[style*="color: #00a650"] {
+  color: #00a650 !important;
+}
+
+/* Sem métodos disponíveis */
+.msc-no-shipping-methods {
+  padding: 20px;
+  text-align: center;
+  color: var(--msc-text-light);
+  background: #fff3cd;
+  border-radius: 8px;
+  margin: 0;
+}
+
+/* ========================================
+   ESCONDER ELEMENTOS DESNECESSÁRIOS NO STEP 2
+======================================== */
+
+/* Esconder tabela de produtos no Step 2 */
+.msc-step[data-step="2"] .woocommerce-checkout-review-order-table thead,
+.msc-step[data-step="2"] .woocommerce-checkout-review-order-table tbody,
+.msc-step[data-step="2"] .woocommerce-checkout-review-order-table .cart-subtotal,
+.msc-step[data-step="2"] .woocommerce-checkout-review-order-table .cart-discount,
+.msc-step[data-step="2"] .woocommerce-checkout-review-order-table .order-total {
+  display: none !important;
+}
+
+/* Esconder métodos de pagamento no Step 2 */
+.msc-step[data-step="2"] #payment {
+  display: none !important;
+}
+
+/* ========================================
+   RESPONSIVO STEP 2
+======================================== */
+
+@media (max-width: 768px) {
+  .msc-shipping-group-header {
+    padding: 16px;
+  }
+  
+  .msc-shipping-group-header .msc-codlocal-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .msc-shipping-group-header .msc-codlocal-icon {
+    font-size: 28px;
+  }
+  
+  .msc-shipping-group-header .msc-codlocal-name {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 18px;
+  }
+  
+  .msc-shipping-group-methods {
+    padding: 12px;
+  }
+  
+  .msc-shipping-method-item {
+    padding: 14px 16px;
+  }
+  
+  .msc-method-details {
+    gap: 6px;
+  }
+  
+  .msc-method-name {
+    font-size: 15px;
+  }
+  
+  .msc-method-cost {
+    font-size: 16px;
+  }
+  
+  .msc-method-time {
+    font-size: 13px;
+  }
+}
+
+/* ========================================
+   ANIMAÇÕES
+======================================== */
+
+.msc-shipping-group {
+  animation: slideInUp 0.4s ease;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   SEPARADOR ENTRE GRUPOS
+======================================== */
+
+.msc-shipping-group + .msc-shipping-group {
+  position: relative;
+  margin-top: 32px;
+}
+
+.msc-shipping-group + .msc-shipping-group::before {
+  content: "";
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--msc-primary-orange) 50%,
+    transparent 100%
+  );
+}
+
+/* ========================================
+   INTEGRAÇÃO COM WOOCOMMERCE NATIVO
+======================================== */
+
+/* Se houver apenas 1 package, simplificar */
+.msc-shipping-group:only-of-type {
+  /* Mantém mesmo visual */
+}
+
+/* Garantir que os radios funcionem corretamente */
+.msc-shipping-method-input:checked + .msc-method-details {
+  /* Mantém estilo padrão */
+}
+
+/* ========================================
+   BOTÕES DE AÇÃO NO STEP 2
+======================================== */
+
+.msc-step[data-step="2"] .msc-btn-next {
+  background: var(--msc-primary-orange);
+  border: none;
+}
+
+.msc-step[data-step="2"] .msc-btn-next:hover {
+  background: var(--msc-primary-orange-dark);
+}
+
+.msc-step[data-step="2"] .msc-btn-back {
+  border-color: var(--msc-primary-orange);
+  color: var(--msc-primary-orange);
+}
+
+.msc-step[data-step="2"] .msc-btn-back:hover {
+  background: #fff5f0;
+  border-color: var(--msc-primary-orange-dark);
+  color: var(--msc-primary-orange-dark);
+}
+
+/**
+ * CSS NEUTRO para Campo CPF/CNPJ do Pagar.me
+ * Substitua o CSS anterior por este (cores neutras, sem laranja)
+ */
+
+/* ========================================
+   STEP 3: CAMPO PAGAR.ME (VERSÃO NEUTRA)
+======================================== */
+
+/* Wrapper do campo de documento */
+.msc-pagarme-document-wrapper {
+  margin-bottom: 20px;
+}
+
+/* Label do campo */
+.msc-pagarme-document-wrapper label[for="pagarme-card-document"] {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.msc-pagarme-document-wrapper label[for="pagarme-card-document"] .required {
+  color: #e2401c;
+  font-weight: 700;
+}
+
+/* Toggle de tipo de documento */
+#document-type-toggle {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 12px 0 !important;
+  padding: 8px 12px;
+  background: #f7f7f7;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* Opções do toggle (CPF/CNPJ) */
+.msc-doc-type-option {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  color: #333 !important;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  margin: 0 !important;
+}
+
+.msc-doc-type-option:hover {
+  background: #e8e8e8;
+}
+
+/* Radio button */
+.msc-doc-type-option input[type="radio"] {
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 !important;
+  cursor: pointer;
+}
+
+.msc-doc-type-option span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Opção selecionada - tons neutros */
+.msc-doc-type-option:has(input:checked) {
+  background: #333;
+  color: white !important;
+}
+
+.msc-doc-type-option:has(input:checked) span {
+  color: white !important;
+  font-weight: 600;
+}
+
+/* Campo de input do documento */
+#pagarme-card-document {
+  width: 100% !important;
+  padding: 12px 16px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  transition: all 0.3s ease !important;
+  margin-top: 8px !important;
+}
+
+#pagarme-card-document:focus {
+  outline: none !important;
+  border-color: #999 !important;
+  box-shadow: 0 0 0 1px #999 !important;
+}
+
+/* Remover estilos inline quebrados do plugin */
+#document-type-toggle[style] {
+  display: flex !important;
+  margin-left: 0 !important;
+}
+
+#document-type-toggle label[style] {
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  margin-left: 0 !important;
+}
+
+#document-type-toggle input[type="radio"][style] {
+  margin: 0 !important;
+}
+
+/* ========================================
+   STEP 3: MELHORIAS GERAIS (NEUTRO)
+======================================== */
+
+/* Container dos métodos de pagamento */
+.wc_payment_methods {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+
+/* Item de método de pagamento */
+.wc_payment_method {
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.wc_payment_method:hover {
+  border-color: #999;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Label do método */
+.wc_payment_method label {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 15px;
+  margin: 0;
+  transition: all 0.3s ease;
+}
+
+.wc_payment_method label img {
+  margin-left: 8px;
+  max-height: 24px;
+}
+
+/* Radio button do método */
+.wc_payment_method input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+/* Método selecionado - neutro */
+.wc_payment_method input[type="radio"]:checked + label,
+.wc_payment_method:has(input:checked) label {
+  background: #f7f7f7;
+  font-weight: 600;
+}
+
+.wc_payment_method:has(input:checked) {
+  border-color: #333;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Caixa de detalhes do pagamento */
+.payment_box {
+  padding: 20px;
+  background: transparent;
+  border-top: 1px solid #ddd;
+}
+
+.payment_box p {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Campos dentro do payment_box */
+.payment_box input[type="text"],
+.payment_box input[type="tel"],
+.payment_box input[type="email"],
+.payment_box select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  margin-bottom: 12px;
+}
+
+.payment_box input:focus,
+.payment_box select:focus {
+  outline: none;
+  border-color: #999;
+  box-shadow: 0 0 0 1px #999;
+}
+
+/* Labels dentro do payment_box */
+.payment_box label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+/* ========================================
+   RESPONSIVO
+======================================== */
+
+@media (max-width: 768px) {
+  #document-type-toggle {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .msc-doc-type-option {
+    justify-content: center;
+    padding: 10px;
+  }
+  
+  .wc_payment_method label {
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+  
+  .payment_box {
+    padding: 16px;
+  }
+}
+
+/**
+ * CSS VISUAL para Step 4 - Resumo do Pedido
+ * Adicione este código no arquivo: assets/css/multistep-checkout-v4.css
+ */
+
+/* ========================================
+   STEP 4: REVISÃO - LAYOUT VISUAL
+======================================== */
+
+/* Seções do resumo */
+.msc-review-section {
+  background: white;
+  border: 1px solid var(--msc-hairline, #e5e7eb);
+  border-radius: var(--msc-radius-card, 8px);
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.msc-review-section:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Cabeçalho da seção */
+.msc-review-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--msc-panel-bg, #f9fafb);
+  border-bottom: 1px solid var(--msc-hairline, #e5e7eb);
+}
+
+.msc-review-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--msc-near-black, #333);
+}
+
+.msc-review-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* Botão Editar */
+.msc-edit-btn {
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid var(--msc-hairline-2, #ddd);
+  border-radius: var(--msc-radius-pill, 999px);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--msc-muted, #666);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.msc-edit-btn:hover {
+  background: #fff5f0;
+  border-color: var(--msc-primary-orange, #F05A28);
+  color: var(--msc-primary-orange, #F05A28);
+  transform: translateY(-1px);
+}
+
+/* Conteúdo da seção */
+.msc-review-section-content {
+  padding: 20px;
+}
+
+/* ========================================
+   SEÇÃO 1: PRODUTOS
+======================================== */
+
+/* Cabeçalho do CODLOCAL */
+.msc-review-codlocal-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+}
+
+.msc-review-codlocal-icon {
+  font-size: 18px;
+}
+
+.msc-review-codlocal-badge {
+  padding: 4px 10px;
+  background: #333;
+  color: white;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Item de produto */
+.msc-review-product-item {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.msc-review-product-item:last-child {
+  border-bottom: none;
+}
+
+/* Imagem do produto */
+.msc-review-product-image {
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #f5f5f5;
+}
+
+.msc-review-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Detalhes do produto */
+.msc-review-product-details {
+  flex: 1;
+}
+
+.msc-review-product-name {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.4;
+}
+
+.msc-review-product-meta {
+  margin: 0;
+  font-size: 14px;
+  color: #667;
+}
+
+/* Preço do produto */
+.msc-review-product-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  text-align: right;
+}
+
+/* ========================================
+   SEÇÃO 2: ENTREGA
+======================================== */
+
+/* Endereço */
+.msc-review-address {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.msc-review-address:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.msc-review-subsection-title {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.msc-review-address-text p {
+  margin: 0;
+  padding: 12px 16px;
+  background: #f9fafb;
+  border-left: 3px solid #333;
+  border-radius: 4px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #333;
+}
+
+/* Métodos de frete */
+.msc-review-shipping-method {
+  margin-bottom: 0;
+}
+
+.msc-review-shipping-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.msc-review-shipping-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #f9fafb;
+  border-left: 3px solid #00a650;
+  border-radius: 4px;
+  font-size: 15px;
+}
+
+.msc-review-shipping-package {
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.msc-review-shipping-cost {
+  margin-left: auto;
+  font-weight: 700;
+  color: #333;
+}
+
+/* ========================================
+   SEÇÃO 3: PAGAMENTO
+======================================== */
+
+.msc-review-payment-method {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  background: #f9fafb;
+  border-left: 3px solid #333;
+  border-radius: 4px;
+}
+
+.msc-review-payment-icon {
+  flex-shrink: 0;
+  font-size: 32px;
+  line-height: 1;
+}
+
+.msc-review-payment-icon img {
+  max-height: 32px;
+  width: auto;
+}
+
+.msc-review-payment-details {
+  flex: 1;
+}
+
+.msc-review-payment-details strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.msc-review-payment-desc {
+  margin: 0;
+  font-size: 14px;
+  color: #667;
+  line-height: 1.6;
+}
+
+/* ========================================
+   SEÇÃO 4: TOTAIS
+======================================== */
+
+.msc-review-totals-table {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.msc-review-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--msc-panel-bg, #f9fafb);
+  border-radius: var(--msc-radius-input, 6px);
+  font-size: 14px;
+}
+
+.msc-review-total-row span {
+  color: var(--msc-near-black, #333);
+  font-weight: 500;
+}
+
+.msc-review-total-row strong {
+  color: var(--msc-near-black, #333);
+  font-weight: 700;
+}
+
+/* Desconto */
+.msc-review-total-row.msc-review-discount {
+  background: #f0fdf4;
+  border-left: 3px solid var(--msc-success, #00a650);
+}
+
+/* Total final */
+.msc-review-total-row.msc-review-total-final {
+  background: var(--msc-near-black, #231F20);
+  color: white;
+  font-size: 19px;
+  font-weight: 800;
+  padding: 16px 20px;
+}
+
+.msc-review-total-row.msc-review-total-final span,
+.msc-review-total-row.msc-review-total-final strong {
+  color: white;
+}
+
+/* ========================================
+   SEÇÃO 5: TERMOS
+======================================== */
+
+.msc-review-terms {
+  border: 2px solid var(--msc-hairline-2, #ddd);
+}
+
+.msc-review-terms .msc-review-section-content {
+  padding: 24px;
+  background: #fafafa;
+}
+
+.woocommerce-terms-and-conditions-wrapper {
+  margin-bottom: 16px;
+}
+
+.terms.wc-terms-and-conditions {
+  margin: 0;
+}
+
+.terms label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1.6;
+  padding: 16px;
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.terms label:hover {
+  border-color: #999;
+  background: #fafafa;
+}
+
+.terms input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.terms input[type="checkbox"]:checked + .woocommerce-terms-and-conditions-checkbox-text {
+  font-weight: 600;
+}
+
+.woocommerce-terms-and-conditions-link {
+  color: #333;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.woocommerce-terms-and-conditions-link:hover {
+  color: #000;
+}
+
+/* ========================================
+   ESTADOS VAZIOS
+======================================== */
+
+.msc-review-empty {
+  padding: 16px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  background: #f9f9f9;
+  border-radius: 6px;
+  margin: 0;
+}
+
+/* ========================================
+   BOTÃO DE FINALIZAR
+======================================== */
+
+.msc-step-review .msc-btn-submit {
+  background: #00a650;
+  color: white;
+  font-size: 18px;
+  padding: 16px 40px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 166, 80, 0.3);
+}
+
+.msc-step-review .msc-btn-submit:hover {
+  background: #008a43;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 166, 80, 0.4);
+}
+
+/* ========================================
+   ANIMAÇÕES
+======================================== */
+
+.msc-review-section {
+  animation: fadeInUp 0.4s ease;
+  animation-fill-mode: both;
+}
+
+.msc-review-section:nth-child(1) { animation-delay: 0.1s; }
+.msc-review-section:nth-child(2) { animation-delay: 0.2s; }
+.msc-review-section:nth-child(3) { animation-delay: 0.3s; }
+.msc-review-section:nth-child(4) { animation-delay: 0.4s; }
+.msc-review-section:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   RESPONSIVO
+======================================== */
+
+@media (max-width: 768px) {
+  .msc-review-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .msc-edit-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .msc-review-product-item {
+    grid-template-columns: 50px 1fr;
+    grid-template-areas:
+      "image details"
+      "price price";
+  }
+  
+  .msc-review-product-image {
+    grid-area: image;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .msc-review-product-details {
+    grid-area: details;
+  }
+  
+  .msc-review-product-price {
+    grid-area: price;
+    text-align: left;
+    padding-top: 8px;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 8px;
+  }
+  
+  .msc-review-shipping-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .msc-review-shipping-cost {
+    margin-left: 0;
+  }
+  
+  .msc-review-payment-method {
+    flex-direction: column;
+  }
+  
+  .msc-step-review .msc-btn-submit {
+    width: 100%;
+    font-size: 16px;
+  }
+}
+
+/**
+ * ========================================
+ * AJUSTES ESTÉTICOS PERSONALIZADOS (v7 - Remoção do Contorno Azul)
+ * ========================================
+ */
+
+/* 1. Estilo BASE para todos os botões de ação
+----------------------------------------------------------------*/
+.msc-btn,
+.msc-apply-coupon {
+    display: inline-block;
+    padding: 16px 32px;
+    border-radius: var(--msc-radius-pill);
+    font-weight: bold;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    cursor: pointer;
+    transition: var(--msc-transition, all 0.3s ease);
+    border: 1px solid transparent;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.msc-step-footer .msc-btn-back {
+    flex: 0 0 auto;
+}
+
+.msc-step-footer .msc-btn-next {
+    flex: 1;
+}
+
+/* 2. Estilo dos botões PRIMÁRIOS (Cor Laranja Principal)
+----------------------------------------------------------------*/
+.msc-btn-next,
+.msc-btn-submit,
+#place_order,
+.msc-apply-coupon {
+    background-color: var(--msc-primary-orange);
+    color: #fff !important;
+    border-color: var(--msc-primary-orange);
+}
+
+.msc-btn-next:hover,
+.msc-btn-submit:hover,
+#place_order:hover,
+.msc-apply-coupon:hover {
+    background-color: var(--msc-primary-orange-dark, #D6421E);
+    border-color: var(--msc-primary-orange-dark, #D6421E);
+    color: #fff !important;
+}
+
+/* 2b. Botão final "Finalizar Compra": verde quando habilitado (termos
+   marcados), cinza/desabilitado até lá — sobrepõe a cor laranja padrão
+   dos demais botões "próximo" só para este botão específico. */
+#place_order {
+    background-color: var(--msc-success, #00A650);
+    border-color: var(--msc-success, #00A650);
+}
+
+#place_order:hover {
+    background-color: #008a43;
+    border-color: #008a43;
+}
+
+#place_order.msc-btn-disabled,
+#place_order.msc-btn-disabled:hover {
+    background-color: #ccc;
+    border-color: #ccc;
+    color: #888 !important;
+    cursor: not-allowed;
+}
+
+/* 3. Estilo do botão SECUNDÁRIO (Voltar)
+----------------------------------------------------------------*/
+.msc-btn-back {
+    background-color: #fff;
+    color: var(--msc-primary-orange);
+    border: 1px solid var(--msc-primary-orange);
+    border-radius: var(--msc-radius-pill);
+}
+
+.msc-btn-back:hover {
+    background-color: #fff5f0;
+    color: var(--msc-primary-orange-dark, #D6421E);
+    border-color: var(--msc-primary-orange-dark, #D6421E);
+}
+
+/* 4. Estilo de "Card" para os grupos de frete
+----------------------------------------------------------------*/
+.msc-shipping-group {
+    background-color: #fff;
+    border: 1px solid var(--msc-border, #e5e7eb);
+    border-radius: var(--msc-radius, 8px);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--msc-shadow, 0 2px 8px rgba(0, 0, 0, 0.1));
+}
+
+/* 5. Estilo Laranja para o Checkbox "Endereço Diferente"
+----------------------------------------------------------------*/
+/* NOVO: Remove o contorno azul padrão do navegador ao clicar */
+.msc-checkbox-label:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.msc-checkbox-label {
+    border: 1px solid var(--msc-border, #e5e7eb);
+    padding: 15px;
+    border-radius: var(--msc-radius, 8px);
+    transition: var(--msc-transition, all 0.3s ease);
+    display: block;
+}
+
+.msc-checkbox-label:hover {
+    border-color: var(--msc-primary-orange-dark);
+}
+
+/* Aplica o contorno laranja na label quando o input dentro dela está selecionado */
+.msc-ship-to-different input#ship-to-different-address-checkbox:checked ~ .msc-checkbox-label,
+.msc-ship-to-different .msc-checkbox-label:has(input#ship-to-different-address-checkbox:checked) {
+    border-color: var(--msc-primary-orange);
+    background-color: #fff5f0;
+    box-shadow: 0 0 0 2px rgba(240, 90, 40, 0.3);
+}
+
+/* Altera a cor do ícone (a "flag") para laranja quando selecionado */
+.msc-ship-to-different input#ship-to-different-address-checkbox:checked + .msc-checkbox-text .msc-checkbox-icon::before {
+    background-color: var(--msc-primary-orange);
+    border-color: var(--msc-primary-orange);
+}
+
+/* Altera a cor do "check" (o V) para branco */
+.msc-ship-to-different input#ship-to-different-address-checkbox:checked + .msc-checkbox-text .msc-checkbox-icon::after {
+    border-color: #ffffff;
+}
+
+/**
+ * CORREÇÕES PARA ESCONDER ELEMENTOS DO STEP 3
+ * Adicione este código ao final do arquivo: assets/css/multistep-checkout-v4.css
+ */
+
+/* ========================================
+   ESCONDER ELEMENTOS DE FINALIZAÇÃO NO STEP 3
+======================================== */
+
+/* Esconder TODOS os elementos de finalização no Step 3 */
+.msc-step[data-step="3"] .form-row.place-order,
+.msc-step[data-step="3"] #place_order,
+.msc-step[data-step="3"] button[name="woocommerce_checkout_place_order"],
+.msc-step[data-step="3"] .woocommerce-terms-and-conditions-wrapper,
+.msc-step[data-step="3"] .woocommerce-privacy-policy-text,
+.msc-step[data-step="3"] .woocommerce-terms-and-conditions,
+.msc-step[data-step="3"] .woocommerce-checkout-payment-terms,
+.msc-step[data-step="3"] p.form-row.terms,
+.msc-step[data-step="3"] .woocommerce-form__label-for-checkbox,
+.msc-step[data-step="3"] input[name="terms"],
+.msc-step[data-step="3"] input[name="terms-field"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    left: -99999px !important;
+    pointer-events: none !important;
+}
+
+/* Nuclear option - esconder qualquer div que contenha "place-order" ou "terms" no Step 3 */
+.msc-step[data-step="3"] div[class*="place-order"],
+.msc-step[data-step="3"] div[class*="place_order"],
+.msc-step[data-step="3"] div[class*="terms-and-conditions"],
+.msc-step[data-step="3"] div[class*="checkout-terms"] {
+    display: none !important;
+}
+
+/* Esconder noscript também */
+.msc-step[data-step="3"] noscript {
+    display: none !important;
+}
+
+/* ========================================
+   GARANTIR QUE ELEMENTOS APAREÇAM NO STEP 4
+======================================== */
+
+/* Mostrar elementos APENAS no Step 4 */
+.msc-step[data-step="4"] .form-row.place-order,
+.msc-step[data-step="4"] #place_order,
+.msc-step[data-step="4"] .woocommerce-terms-and-conditions-wrapper,
+.msc-step[data-step="4"] .woocommerce-privacy-policy-text {
+    display: block !important;
+    visibility: visible !important;
+    height: auto !important;
+    position: static !important;
+    left: auto !important;
+    pointer-events: auto !important;
+}
+
+
+/* Step 3 – zera qualquer faixa/pseudo-elemento da lista de pagamento */
+.msc-step[data-step="3"] #payment ul.payment_methods,
+.msc-step[data-step="3"] #payment ul.payment_methods > li,
+.msc-step[data-step="3"] #payment ul.payment_methods > li > label {
+  background: transparent !important;
+  padding-left: 0 !important;
+  border-left: none !important;
+  position: relative !important;
+}
+
+
+/* ============================================
+   🎯 SOLUÇÃO FINAL: REMOVER INPUT DA ÁREA VISÍVEL
+   ============================================ */
+
+/* Esconder e mover input completamente para fora */
+.payment-method-option input[type="radio"] {
+    position: absolute !important;
+    left: -9999px !important;  /* ⚠️ Move para BEM longe */
+    top: -9999px !important;   /* ⚠️ Move para BEM longe */
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    z-index: -1 !important;
+}
+
+/* Garantir que o label ocupe o espaço correto */
+.payment-method-option .payment-method-label {
+    position: relative !important;
+    z-index: 10 !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+}
+
+/* Container sem overflow que possa mostrar a faixa */
+.payment-method-option {
+    position: relative !important;
+    overflow: hidden !important;  /* ⚠️ Esconde qualquer coisa que sair */
+}
+
+/* Se a faixa ainda aparecer na borda, force background */
+.payment-method-option {
+    background: #fff !important;
+}
+
+.payment-method-option.selected {
+    background: #f0f8ff !important;
+}
+
+/* ========================================
+   CORES UNIFORMES - TOTAIS (BACKUP)
+======================================== */
+
+.msc-review-subtotal-value,
+.msc-review-subtotal-value *,
+.msc-review-shipping-total,
+.msc-review-shipping-total * {
+  color: #333 !important;
+}
+
+.msc-review-final-total,
+.msc-review-final-total * {
+  color: white !important;
+}
+
+.msc-review-discount strong,
+.msc-review-discount strong * {
+  color: var(--msc-success, #00a650) !important;
+}
+
+.msc-review-free-shipping {
+  color: var(--msc-success, #00a650) !important;
+  font-weight: 700;
+}
+
+/* ========================================
+   CORREÇÃO: CENTRALIZAR X DO BOTÃO REMOVER
+======================================== */
+.msc-remove-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  line-height: 1;
+  padding: 0;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* ========================================
+   OCULTAR MENSAGEM DE CUPOM NO CHECKOUT
+======================================== */
+.woocommerce-info.showcoupon {
+  display: none !important;
+}
+
+/* Caso a classe seja diferente, use este seletor mais amplo */
+.woocommerce-info:has(.showcoupon) {
+  display: none !important;
+}
+
+/**
+ * ========================================
+ * AUMENTAR ALTURA DOS INPUTS - STEP 2
+ * FORÇA MÁXIMA COM !important
+ * ========================================
+ * 
+ * Cole este código NO FINAL DO SEU multistep-checkout-v4.css
+ * Ele vai sobrescrever TODAS as regras anteriores
+ */
+
+/* ========================================
+   OPÇÃO 1: ALTURA MÉDIA (+40%) - RECOMENDADO
+   Altura aproximada: ~52px
+======================================== */
+
+.msc-step[data-step="2"] .msc-fields-grid .form-row input,
+.msc-step[data-step="2"] .msc-fields-grid .form-row select,
+.msc-step[data-step="2"] .msc-fields-grid .form-row textarea {
+  width: 100% !important;
+  padding: 11px 12px !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  border: 1.5px solid var(--msc-hairline-2) !important;
+  border-radius: var(--msc-radius-input) !important;
+  box-shadow: none !important;
+  transition: all 0.3s ease !important;
+  box-sizing: border-box !important;
+  min-height: 0 !important;
+}
+
+/* Labels no mesmo estilo do design de referência (normal-case, cinza-escuro) */
+.msc-step[data-step="2"] .msc-fields-grid .form-row label {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  margin-bottom: 6px !important;
+  color: #444 !important;
+  display: block !important;
+}
+
+
+/* ========================================
+   OPÇÃO 2: ALTURA GRANDE (+60%)
+   Altura aproximada: ~56px
+   Descomente para usar esta versão
+======================================== */
+
+/*
+.msc-step[data-step="2"] .msc-fields-grid .form-row input,
+.msc-step[data-step="2"] .msc-fields-grid .form-row select,
+.msc-step[data-step="2"] .msc-fields-grid .form-row textarea {
+  width: 100% !important;
+  padding: 16px 18px !important;
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  border: 1px solid var(--msc-border) !important;
+  border-radius: 6px !important;
+  transition: all 0.3s ease !important;
+  box-sizing: border-box !important;
+  min-height: 56px !important;
+}
+
+.msc-step[data-step="2"] .msc-fields-grid .form-row label {
+  font-size: 14.5px !important;
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+  color: var(--msc-text) !important;
+  display: block !important;
+}
+*/
+
+
+/* ========================================
+   OPÇÃO 3: ALTURA EXTRA GRANDE (+80%)
+   Altura aproximada: ~60px
+   Descomente para usar esta versão
+======================================== */
+
+/*
+.msc-step[data-step="2"] .msc-fields-grid .form-row input,
+.msc-step[data-step="2"] .msc-fields-grid .form-row select,
+.msc-step[data-step="2"] .msc-fields-grid .form-row textarea {
+  width: 100% !important;
+  padding: 18px 20px !important;
+  font-size: 17px !important;
+  line-height: 1.6 !important;
+  border: 1.5px solid var(--msc-border) !important;
+  border-radius: 6px !important;
+  transition: all 0.3s ease !important;
+  box-sizing: border-box !important;
+  min-height: 60px !important;
+}
+
+.msc-step[data-step="2"] .msc-fields-grid .form-row label {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  margin-bottom: 9px !important;
+  color: var(--msc-text) !important;
+  display: block !important;
+}
+*/
+
+
+/* ========================================
+   MELHORIAS VISUAIS AUTOMÁTICAS
+======================================== */
+
+/* SELECT - Seta customizada */
+.msc-step[data-step="2"] .msc-fields-grid .form-row select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 16px center !important;
+  background-size: 12px !important;
+  padding-right: 42px !important;
+  cursor: pointer !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+/* TEXTAREA - Altura ajustada */
+.msc-step[data-step="2"] .msc-fields-grid .form-row textarea {
+  min-height: 95px !important;
+  resize: vertical !important;
+  font-family: inherit !important;
+}
+
+/* FOCUS - Destaque ao clicar */
+.msc-step[data-step="2"] .msc-fields-grid .form-row input:focus,
+.msc-step[data-step="2"] .msc-fields-grid .form-row select:focus,
+.msc-step[data-step="2"] .msc-fields-grid .form-row textarea:focus {
+  outline: none !important;
+  border-color: var(--msc-primary) !important;
+  box-shadow: 0 0 0 3px rgba(52, 131, 250, 0.15) !important;
+  background: #fff !important;
+  transform: translateY(-1px);
+}
+
+/* HOVER - Destaque ao passar mouse */
+.msc-step[data-step="2"] .msc-fields-grid .form-row input:hover:not(:focus),
+.msc-step[data-step="2"] .msc-fields-grid .form-row select:hover:not(:focus),
+.msc-step[data-step="2"] .msc-fields-grid .form-row textarea:hover:not(:focus) {
+  border-color: #999 !important;
+}
+
+/* PLACEHOLDER - Mais legível */
+.msc-step[data-step="2"] .msc-fields-grid .form-row input::placeholder,
+.msc-step[data-step="2"] .msc-fields-grid .form-row select::placeholder,
+.msc-step[data-step="2"] .msc-fields-grid .form-row textarea::placeholder {
+  color: #999 !important;
+  opacity: 0.7 !important;
+}
+
+/* ASTERISCO OBRIGATÓRIO - Mais visível */
+.msc-step[data-step="2"] .msc-fields-grid .form-row label .required {
+  color: #f23d4f !important;
+  font-size: 1.15em !important;
+  margin-left: 3px !important;
+  font-weight: 700 !important;
+}
+
+
+/* ========================================
+   CAMPOS ESPECÍFICOS - LARGURAS OTIMIZADAS
+   CEP, Número e Estado (billing) não usam mais max-width fixo aqui: a
+   largura de cada um agora vem do grid de 10 colunas do card (ver
+   seções ENDEREÇO e ENDEREÇO DE ENTREGA abaixo).
+======================================== */
+
+/* Estado - select2 estilizado como um select simples (mesma altura/borda
+   dos demais campos), sem o "chrome" próprio do tema padrão do select2 */
+.msc-step[data-step="2"] .select2-container--default .select2-selection--single {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 11px 12px !important;
+  border: 1.5px solid var(--msc-hairline-2) !important;
+  border-radius: var(--msc-radius-input) !important;
+  background: #fff !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Mesmo font-size dos demais campos (inputs de texto são forçados a
+   15.5px lá embaixo, em "GARANTIR QUE SOBRESCREVA TUDO" — isso não
+   toca o <select> nativo escondido pelo select2, então o texto do
+   dropdown ficava em 13px, menor que o resto do formulário). */
+.msc-step[data-step="2"] .select2-container--default .select2-selection--single .select2-selection__rendered {
+  padding: 0 24px 0 0 !important;
+  font-size: 15.5px !important;
+  line-height: 1.4 !important;
+  color: var(--msc-text) !important;
+}
+
+.msc-step[data-step="2"] .select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: auto !important;
+  top: 50% !important;
+  right: 14px !important;
+  transform: translateY(-50%);
+  width: 12px !important;
+}
+
+.msc-step[data-step="2"] .select2-container--default .select2-selection--single .select2-selection__arrow b {
+  border-color: #333 transparent transparent transparent !important;
+  border-width: 6px 5px 0 5px !important;
+  margin-left: -5px !important;
+}
+
+.msc-step[data-step="2"] .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+  border-color: transparent transparent #333 transparent !important;
+  border-width: 0 5px 6px 5px !important;
+}
+
+.msc-step[data-step="2"] .select2-container--default .select2-selection--single:focus,
+.msc-step[data-step="2"] .select2-container--default.select2-container--focus .select2-selection--single {
+  border-color: var(--msc-primary) !important;
+  box-shadow: 0 0 0 3px rgba(52, 131, 250, 0.15) !important;
+}
+
+/* ========================================
+   ENDEREÇO (.msc-address-block, billing) — mesmo tratamento do card
+   Endereço de Entrega abaixo: grid de 10 colunas com posição e
+   proporção fixas por campo (não depende da largura disponível).
+   Tipo de Pessoa e País ficam ocultos aqui: são definidos no cadastro
+   do perfil, não no checkout (País continua indo como BR no input
+   hidden do WooCommerce mesmo sem exibir a linha).
+======================================== */
+.msc-address-block .msc-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  column-gap: 14px;
+  row-gap: 14px;
+}
+
+/* Mesmo motivo da seção Endereço de Entrega: garante que o <p
+   class="form-row-first/last"> preencha 100% da coluna que ganhou
+   abaixo, mesmo se o tema aplicar um width próprio nele. */
+.msc-address-block .msc-fields-grid > .form-row {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.msc-address-block #billing_persontype_field,
+.msc-address-block #billing_country_field {
+  display: none !important;
+}
+
+/* Posição e proporção de cada campo: Nome 50% | Sobrenome 50% (linha
+   1 — mesma premissa de Cidade/Estado, mesmo tamanho); CEP 30% |
+   Bairro 70% (linha 2); Endereço 80% | Número 20% (linha 3);
+   Complemento (linha 4, full); Cidade 50% | Estado 50% (linha 5). */
+#billing_first_name_field {
+  grid-column: span 5;
+  grid-row: 1;
+}
+
+#billing_last_name_field {
+  grid-column: span 5;
+  grid-row: 1;
+}
+
+#billing_postcode_field {
+  grid-column: span 3;
+  grid-row: 2;
+}
+
+#billing_neighborhood_field {
+  grid-column: span 7;
+  grid-row: 2;
+}
+
+#billing_address_1_field {
+  grid-column: span 8;
+  grid-row: 3;
+}
+
+#billing_number_field {
+  grid-column: span 2;
+  grid-row: 3;
+}
+
+#billing_address_2_field {
+  grid-column: 1 / -1;
+  grid-row: 4;
+}
+
+#billing_city_field {
+  grid-column: span 5;
+  grid-row: 5;
+}
+
+#billing_state_field {
+  grid-column: span 5;
+  grid-row: 5;
+}
+
+/* ========================================
+   ENDEREÇO DE ENTREGA (.msc-shipping-section.shipping_address)
+   Grid exato: País e Estado full-width; select2 confirmado ativo em
+   #shipping_state (o próprio JS do plugin chama $(select).select2() em
+   todo <select> desse bloco ao entrar no Step 2 — ver
+   assets/js/multistep-checkout-v4.js, handler de 'msc:enterStep:2').
+   Card e grid seguem o mockup de referência: borda mais clara, cantos
+   mais arredondados (12px) e gap uniforme de 14px entre os campos.
+======================================== */
+.msc-shipping-section.shipping_address {
+  background: #fff;
+  border-radius: var(--msc-radius-card);
+  border-color: #eee;
+}
+
+/* Grid de 10 colunas (em vez de flex-wrap): flex-wrap reflui os campos
+   sozinho conforme o espaço livre, então em telas largas CEP + Bairro
+   + Endereço cabiam todos na mesma linha, empurrando Número sozinho
+   pra linha seguinte com um vão vazio enorme. Com grid-row/grid-column
+   explícitos cada campo tem posição fixa (não depende da largura
+   disponível) e o span em colunas de 10 dá a proporção exata pedida:
+   CEP 30% / Bairro 70%, Endereço 80% / Número 20%, Cidade 50% / Estado
+   50% — cada par sempre soma 10 colunas, preenchendo a linha toda. */
+.msc-shipping-section.shipping_address .msc-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  column-gap: 14px;
+  row-gap: 14px;
+}
+
+/* Cada campo estica pra ocupar 100% da área de grid que ganhou acima,
+   mesmo que o WooCommerce/tema apliquem um width próprio (ex: 47%) no
+   <p class="form-row-first/last"> — sem isso, o <p> não preenche a
+   coluna e volta a sobrar vão vazio dentro dela. */
+.msc-shipping-section.shipping_address .msc-fields-grid > .form-row {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Nome/Sobrenome e País ficam ocultos: o design simplificado usa um único
+   campo "Nome do destinatário" (sincronizado via JS com os dois campos
+   reais, que continuam no DOM/submissão) e não expõe País (só há 1 país
+   habilitado, o valor "BR" já vai no input hidden do WooCommerce mesmo
+   sem exibir a linha). */
+.msc-shipping-section.shipping_address #shipping_first_name_field,
+.msc-shipping-section.shipping_address #shipping_last_name_field,
+.msc-shipping-section.shipping_address #shipping_country_field {
+  display: none !important;
+}
+
+/* Posição e proporção de cada campo, igual ao mockup de referência:
+   Nome do destinatário (linha 1, full); CEP 30% | Bairro 70% (linha
+   2); Endereço 80% | Número 20% (linha 3); Complemento (linha 4,
+   full); Cidade 50% | Estado 50% (linha 5). */
+.msc-shipping-fullname-field {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+
+#shipping_postcode_field {
+  grid-column: span 3;
+  grid-row: 2;
+}
+
+/* CEP (entrega): remove o cap de 200px usado em billing — aqui quem
+   define a largura é o span de 30% da coluna de grid acima. */
+.msc-shipping-section.shipping_address #shipping_postcode_field input {
+  max-width: none !important;
+}
+
+#shipping_neighborhood_field {
+  grid-column: span 7;
+  grid-row: 2;
+}
+
+#shipping_address_1_field {
+  grid-column: span 8;
+  grid-row: 3;
+}
+
+#shipping_number_field {
+  grid-column: span 2;
+  grid-row: 3;
+}
+
+#shipping_address_2_field {
+  grid-column: 1 / -1;
+  grid-row: 4;
+}
+
+#shipping_city_field {
+  grid-column: span 5;
+  grid-row: 5;
+}
+
+#shipping_state_field {
+  grid-column: span 5;
+  grid-row: 5;
+}
+
+/* Estado: fallback para caso o <select> nativo seja exibido sem select2 */
+#shipping_state_field select {
+  width: 100% !important;
+  max-width: none !important;
+  padding: 12px 14px !important;
+  border: 1px solid var(--msc-hairline-2) !important;
+  border-radius: var(--msc-radius-input) !important;
+  background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path d="M0 0l5 6 5-6z" fill="%23666"/></svg>') no-repeat right 14px center !important;
+  appearance: none !important;
+  font-size: 14px !important;
+}
+
+/* Estado: select2 está confirmadamente ativo nesse campo, então o estilo
+   acima nunca chega a aparecer — o container do select2 é o que
+   realmente renderiza. 100% aqui é do próprio #shipping_state_field
+   (span 5 de 10 = metade da linha, igual à Cidade), não da linha
+   inteira. */
+#shipping_state_field .select2-container {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* Estado (entrega): a regra genérica ".msc-step .select2-container--default
+   .select2-selection--single" já cobre esse span, mas ele é o que o
+   select2 efetivamente renderiza por cima do <select> nativo — reforça
+   aqui com o mesmo box/chevron, com escopo por ID para não depender da
+   ordem/cascata das regras acima. */
+#shipping_state_field .select2-container--default .select2-selection--single {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 11px 12px !important;
+  border: 1.5px solid var(--msc-hairline-2) !important;
+  border-radius: var(--msc-radius-input) !important;
+  background: #fff !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+#shipping_state_field .select2-container--default .select2-selection--single .select2-selection__rendered {
+  padding: 0 24px 0 0 !important;
+  font-size: 15.5px !important;
+  line-height: 1.4 !important;
+  color: var(--msc-text) !important;
+}
+
+#shipping_state_field .select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: auto !important;
+  top: 50% !important;
+  right: 14px !important;
+  transform: translateY(-50%);
+  width: 10px !important;
+}
+
+#shipping_state_field .select2-container--default .select2-selection--single .select2-selection__arrow b {
+  border-color: #666 transparent transparent transparent !important;
+  border-width: 6px 5px 0 5px !important;
+  margin-left: -5px !important;
+}
+
+#shipping_state_field .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+  border-color: transparent transparent #666 transparent !important;
+  border-width: 0 5px 6px 5px !important;
+}
+
+#shipping_state_field .select2-container--default .select2-selection--single:focus,
+#shipping_state_field .select2-container--default.select2-container--open .select2-selection--single {
+  border-color: var(--msc-primary) !important;
+  box-shadow: 0 0 0 3px rgba(52, 131, 250, 0.15) !important;
+}
+
+/* Número (billing e shipping): quem limita a largura agora é a coluna
+   de grid de cada card (span 2 de 10 = 20%, ver seções ENDEREÇO e
+   ENDEREÇO DE ENTREGA); o input em si continua width:100% dessa área. */
+
+
+/* ========================================
+   COMPATIBILIDADE MOBILE
+======================================== */
+
+@media (max-width: 768px) {
+  /* Inputs ligeiramente menores no mobile */
+  .msc-step[data-step="2"] .msc-fields-grid .form-row input,
+  .msc-step[data-step="2"] .msc-fields-grid .form-row select,
+  .msc-step[data-step="2"] .msc-fields-grid .form-row textarea {
+    padding: 12px 14px !important;
+    font-size: 15px !important;
+    min-height: 48px !important;
+  }
+  
+  /* Labels proporcionais */
+  .msc-step[data-step="2"] .msc-fields-grid .form-row label {
+    font-size: 13.5px !important;
+    margin-bottom: 6px !important;
+  }
+  
+  /* Campos específicos em largura total */
+  .msc-step[data-step="2"] #billing_postcode_field input,
+  .msc-step[data-step="2"] #shipping_postcode_field input,
+  .msc-step[data-step="2"] #billing_state_field select,
+  .msc-step[data-step="2"] #shipping_state_field select,
+  .msc-step[data-step="2"] #billing_number_field input,
+  .msc-step[data-step="2"] #shipping_number_field input {
+    max-width: 100% !important;
+  }
+
+  /* Endereço e Endereço de Entrega: os spans de coluna (CEP 30%,
+     Número 20% etc.) são pensados pra tela larga — no mobile cada
+     campo ocupa a linha inteira, empilhado, como o restante do
+     checkout. */
+  .msc-shipping-section.shipping_address .msc-fields-grid > .form-row,
+  .msc-address-block .msc-fields-grid > .form-row {
+    grid-column: 1 / -1 !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Telas muito pequenas */
+  .msc-step[data-step="2"] .msc-fields-grid .form-row input,
+  .msc-step[data-step="2"] .msc-fields-grid .form-row select,
+  .msc-step[data-step="2"] .msc-fields-grid .form-row textarea {
+    padding: 11px 13px !important;
+    font-size: 14px !important;
+    min-height: 46px !important;
+  }
+  
+  .msc-step[data-step="2"] .msc-fields-grid .form-row label {
+    font-size: 13px !important;
+  }
+}
+
+
+/* ========================================
+   GARANTIR QUE SOBRESCREVA TUDO
+   Especificidade extra para forçar aplicação
+======================================== */
+
+/* Força máxima para inputs */
+.msc-checkout-wrapper .msc-step[data-step="2"] .msc-fields-grid .form-row input[type="text"],
+.msc-checkout-wrapper .msc-step[data-step="2"] .msc-fields-grid .form-row input[type="email"],
+.msc-checkout-wrapper .msc-step[data-step="2"] .msc-fields-grid .form-row input[type="tel"],
+.msc-checkout-wrapper .msc-step[data-step="2"] .msc-fields-grid .form-row input[type="number"],
+.msc-checkout-wrapper .msc-step[data-step="2"] .msc-fields-grid .form-row select {
+  padding: 14px 16px !important;
+  font-size: 15.5px !important;
+  min-height: 52px !important;
+}
+
+/* ========================================
+   STEP 5: CONFIRMAÇÃO (msc-thankyou.php)
+======================================== */
+.msc-confirmation-wrapper {
+  min-height: 70vh;
+  padding: 60px 20px;
+  font-family: var(--msc-font-family);
+  background: var(--msc-body-bg);
+}
+
+.msc-confirmation-card {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 48px 40px;
+  background: #fff;
+  border-radius: var(--msc-radius-card);
+  box-shadow: var(--msc-shadow-page);
+  text-align: center;
+}
+
+.msc-confirmation-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  background: var(--msc-success);
+  color: #fff;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.msc-confirmation-icon-failed {
+  background: var(--msc-danger, #f23d4f);
+}
+
+.msc-confirmation-title {
+  margin: 0 0 8px;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--msc-near-black);
+}
+
+.msc-confirmation-order-number {
+  margin: 0 0 24px;
+  font-size: 15px;
+  color: var(--msc-muted);
+}
+
+.msc-confirmation-desc {
+  margin: 0 0 24px;
+  font-size: 14px;
+  color: var(--msc-muted);
+}
+
+.msc-confirmation-details {
+  margin: 24px 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--msc-hairline);
+  text-align: left;
+}
+
+.msc-confirmation-details:empty {
+  display: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.msc-confirmation-cta {
+  display: inline-flex;
+}
+
+/* ========================================
+   NEUTRALIZAR CARDS DE GRUPO (codlocal/frete)
+======================================== */
+/* Várias regras herdadas de antes do redesign pintavam esses cabeçalhos
+   de laranja sólido sempre (não só quando há múltiplos locais de
+   estoque). No design, esses cards são brancos com borda fina — laranja
+   fica reservado para hover/seleção/acentos pontuais. Bloco colocado no
+   fim do arquivo de propósito, pra vencer as definições anteriores. */
+.msc-codlocal-group,
+.msc-shipping-group {
+  border: 1px solid var(--msc-hairline, #eee) !important;
+  box-shadow: none !important;
+  background: #fff !important;
+}
+
+.msc-codlocal-header,
+.msc-shipping-group-header {
+  background: #fff !important;
+  border-bottom: 1px solid var(--msc-hairline, #eee) !important;
+  padding: 16px 20px !important;
+}
+
+.msc-codlocal-header .msc-codlocal-icon,
+.msc-shipping-group-header .msc-codlocal-icon {
+  filter: none !important;
+}
+
+.msc-codlocal-header .msc-codlocal-name,
+.msc-shipping-group-header .msc-codlocal-name {
+  color: var(--msc-near-black, #231F20) !important;
+}
+
+.msc-codlocal-header .msc-codlocal-code,
+.msc-shipping-group-header .msc-codlocal-code {
+  background: var(--msc-panel-bg, #F7F7F8) !important;
+  color: var(--msc-muted, #666) !important;
+  backdrop-filter: none !important;
+}
+
+.msc-codlocal-header .msc-codlocal-meta,
+.msc-shipping-group-header .msc-codlocal-meta {
+  color: var(--msc-muted, #666) !important;
+}
+
+.msc-codlocal-header .msc-codlocal-separator,
+.msc-shipping-group-header .msc-codlocal-separator {
+  color: var(--msc-hairline-2, #ddd) !important;
+}
+
+/* Step 2 shipping-group header is a plain white row (smaller icon/name/
+   badge than Step 1's codlocal header) — screenshot 3 "Forma de Entrega". */
+.msc-shipping-group-header .msc-codlocal-icon {
+  font-size: 20px !important;
+}
+
+.msc-shipping-group-header .msc-codlocal-name {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+
+.msc-shipping-group-header .msc-codlocal-code {
+  font-size: 10px !important;
+  padding: 2px 8px !important;
+}
+
+.msc-shipping-group:hover {
+  border-color: var(--msc-hairline-2, #ddd) !important;
+  box-shadow: none !important;
+}
+
+.msc-shipping-group + .msc-shipping-group::before {
+  display: none !important;
+}
