@@ -177,7 +177,7 @@
                         timestamp: Date.now()
                     };
                     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
-                    log('✅ Dados de split da Rede salvos', dataToSave, 'debug');
+                    log('Dados de split da Rede salvos', dataToSave, 'debug');
                     return;
                 }
 
@@ -225,7 +225,7 @@
                             }
                             
                             methods.push(paymentData);
-                            log(`✅ Método coletado: ${method} - R$ ${amount.toFixed(2)}`, paymentData, 'debug');
+                            log(`Método coletado: ${method} - R$ ${amount.toFixed(2)}`, paymentData, 'debug');
                         }
                     });
                     
@@ -238,7 +238,7 @@
                             timestamp: Date.now()
                         };
                         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
-                        log('✅ Dados MULTI-PAGAMENTO salvos com sucesso', dataToSave, 'debug');
+                        log('Dados MULTI-PAGAMENTO salvos com sucesso', dataToSave, 'debug');
                         log(`📊 Total de métodos salvos: ${methods.length}`, null, 'debug');
                         return;
                     } else {
@@ -368,7 +368,7 @@
                 const html = this.generatePaymentReviewHTML(data);
                 $container.html(html);
                 
-                log('✅ Step 4 atualizado com sucesso');
+                log('Step 4 atualizado com sucesso');
                 
             } catch (error) {
                 log('❌ Erro ao atualizar Step 4', error, 'error');
@@ -382,7 +382,7 @@
             const methodNames = {
                 'credit_card': '💳 Cartão de Crédito',
                 'debit_card': '💳 Cartão de Débito',
-                'pix': '⚡ PIX',
+                'pix': 'PIX',
                 'boleto': '📄 Boleto Bancário',
                 'voucher': '🎟 Voucher',
                 'bank_transfer': '🏦 Transferência Bancária',
@@ -408,7 +408,7 @@
                 return html;
             }
 
-            // --- NOVO: Lógica de Multi-Pagamento ---
+            // --- Lógica de Multi-Pagamento ---
             if (data.payment_method === 'pagarme_gateway_multi' && data.multi_payments) {
                 let html = '<div class="pagarme-multi-payment-review">';
                 html += '<h4>🎯 Múltiplos Métodos de Pagamento</h4>';
@@ -430,7 +430,7 @@
                             methodHtml += `<br><em>Parcelas: ${instText}</em>`;
                         }
                     } else if (method === 'pix') {
-                        methodHtml += `<br><em>Pagamento instantâneo</em>`;
+                        methodHtml += `<br><em>Pagamento instantneo</em>`;
                     } else if (method === 'boleto') {
                         methodHtml += `<br><em>Aguardando emissão do boleto</em>`;
                     }
@@ -477,7 +477,7 @@
             }
             
             if (data.payment_method === 'pix') {
-                html += '<p><em>Aprovação instantânea.</em></p>';
+                html += '<p><em>Aprovação instantnea.</em></p>';
             }
             
             if (data.payment_method === 'boleto') {

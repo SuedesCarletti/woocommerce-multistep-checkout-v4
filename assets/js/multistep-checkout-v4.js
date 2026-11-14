@@ -1078,7 +1078,7 @@
             const errorMsg = $response.find('.woocommerce-error').text() || 'Cupom inválido';
             alert(errorMsg);
           } else {
-            alert('✅ Cupom aplicado!');
+            alert('Cupom aplicado!');
             $input.val('');
             this.triggerCheckoutUpdate();
           }
@@ -1102,7 +1102,7 @@
           coupon: coupon
         },
         success: () => {
-          alert('✅ Cupom removido');
+          alert('Cupom removido');
           this.triggerCheckoutUpdate();
         },
         error: () => {

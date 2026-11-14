@@ -7,7 +7,7 @@
  * - Step 3 renderiza métodos de pagamento diretamente
  * - Review table oculta sem duplicar métodos de pagamento
  * - Sincronização de valores de frete entre steps
- * - Atualização dinâmica de valores no Step 4
+ * - Atualização dinmica de valores no Step 4
  */
 
 if (!defined('ABSPATH')) exit;
@@ -503,7 +503,7 @@ do_action('woocommerce_before_checkout_form', $checkout);
         </div>
 
         <!-- ==========================================
-             STEP 3: PAGAMENTO (CORRIGIDO)
+             STEP 3: PAGAMENTO
         ========================================== -->
         <div class="msc-step msc-step-payment" data-step="3" style="display: none;">
             <div class="msc-step-header">
@@ -822,7 +822,7 @@ do_action('woocommerce_before_checkout_form', $checkout);
                         if ($chosen_method && isset($available_gateways[$chosen_method])) {
                             $gateway = $available_gateways[$chosen_method];
                             
-                            // 2. DETECTAR MÉTODO ESPECÍFICO DO PAGARME
+                            // 2. DETECTAR MÉTODO DO PAGARME
                             $pagarme_method = 'credit_card'; // Default
                             $pagarme_method_data = array(
                                 'icon' => '💳',
@@ -899,9 +899,9 @@ do_action('woocommerce_before_checkout_form', $checkout);
                                         )
                                     ),
                                     'pix' => array(
-                                        'icon' => '⚡',
+                                        'icon' => '',
                                         'name' => 'PIX',
-                                        'desc' => 'Pagamento instantâneo via PIX',
+                                        'desc' => 'Pagamento instantneo via PIX',
                                         'details' => array(
                                             'QR Code válido por ' . $gateway->get_option('pix_expiration', '30') . ' minutos',
                                             'Aprovação em até 2 minutos'

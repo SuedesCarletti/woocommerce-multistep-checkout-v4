@@ -23,7 +23,7 @@
   --msc-radius: 8px;
   --msc-transition: all 0.3s ease;
 
-  /* Cliente8 design tokens */
+  /* Design tokens */
   --msc-primary-orange: #F05A28;
   --msc-primary-orange-dark: #D6421E;
   --msc-near-black: #231F20;
@@ -2537,7 +2537,7 @@ body.woocommerce-checkout {
 
 /* 5. Estilo Laranja para o Checkbox "Endereço Diferente"
 ----------------------------------------------------------------*/
-/* NOVO: Remove o contorno azul padrão do navegador ao clicar */
+/* Remove o contorno azul padrão do navegador ao clicar */
 .msc-checkbox-label:focus-within {
     outline: none !important;
     box-shadow: none !important;

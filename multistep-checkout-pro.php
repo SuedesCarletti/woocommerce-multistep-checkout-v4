@@ -1,11 +1,12 @@
 <?php
 /**
  * Plugin Name: Multistep Checkout Pro v4
- * Plugin URI: https://github.com/SuedesCarletti/Multistep-Checkout-Pro-v4
- * GitHub Plugin URI: SuedesCarletti/Multistep-Checkout-Pro-v4
+ * Plugin URI: https://github.com/SuedesCarletti/woocommerce-multistep-checkout-v4
+ * GitHub Plugin URI: SuedesCarletti/woocommerce-multistep-checkout-v4
  * Description: Checkout multistep OTIMIZADO - Funciona nativamente com WooCommerce
  * Version: 4.1.2
  * Author: Suedes Carletti
+ * License: Todos os direitos reservados / All rights reserved
  * Text Domain: multistep-checkout
  */
 
@@ -23,7 +24,7 @@ if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
 // Suba este valor a cada mudança visual relevante em assets/css|js — é o
 // que faz o navegador/CDN buscar uma cópia nova do CSS/JS em vez de
 // continuar servindo a versão em cache (ficou parado em 4.0.2 durante
-// todo o redesign Cliente8, o que pode ter deixado telas com a
+// todo o redesign visual, o que pode ter deixado telas com a
 // marcação PHP nova mas o CSS antigo em cache).
 define('MSC_VERSION', '4.2.4');
 define('MSC_PLUGIN_FILE', __FILE__);
